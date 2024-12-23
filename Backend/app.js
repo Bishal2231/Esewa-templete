@@ -11,10 +11,24 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 connectDB();
+// const corsOptions = {
+//   origin:"http://localhost:5173   ",credentials:true,};
+
+
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+
 const corsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow the origin
+    } else {
+      callback(new Error('Not allowed by CORS')); // Deny the origin
+    }
+  },credentials:true,
 };
+
 app.use(cors(corsOptions));
+
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
